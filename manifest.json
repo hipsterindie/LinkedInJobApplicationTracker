@@ -1,0 +1,42 @@
+{
+    "name": "LinkedIn Job Application Tracker",
+    "version": "1.0",
+    "manifest_version": 3,
+    "description": "Keep track of the LinkedIn job applications that you've completed. This extension will parse the website/tab currently open (granted it is LinkedIn) and grab important bits of information related to the job and company to store into an active Google Sheets tab. I made this because I was tired of manually filling out my job application spreadsheet.",
+    "permissions":["tabs","activeTab","scripting","identity"],
+    "host_permissions": ["https://docs.google.com/spreadsheets/*","https://www.linkedin.com/jobs/*","https://sheets.googleapis.com/*"],
+    "oauth2": {
+        "client_id": "641225353251-60aa62sjv879r646pvtg1boshrbfk8ho.apps.googleusercontent.com",
+        "scopes": [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/userinfo.email"
+        ]
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://docs.google.com/spreadsheets/*","https://www.linkedin.com/jobs/*"],
+            "js": ["contentScript.js"]
+        }
+    ],
+    
+    "web_accessible_resources": [
+        {
+            "resources": ["images/linkedin.png", "images/spreadsheetButton.png"],
+            "matches": ["<all_urls>"]
+        }
+    ],
+
+    "action": {
+        "default_title": "Have you applied yet?",
+        "default_popup": "jobTracker.html",                 
+        "default_icon": {
+            "16":"images/jobTracker_extension.png",
+            "32":"images/jobTracker_extension.png",
+            "48":"images/jobTracker_extension.png",
+            "128":"images/jobTracker_extension.png"
+        }
+    }
+}
