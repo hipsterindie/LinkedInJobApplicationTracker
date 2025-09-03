@@ -73,13 +73,18 @@ async function newJobLoaded(){
 
         //https://www.w3schools.com/cssref/css_selectors.php
         //this link will help, css selector '#text' finds where 'id=text'
-        linkedInApplicationControlsAll = document.querySelectorAll('#jobs-apply-button-id') //find the second button.
+        // linkedInApplicationControlsAll = document.querySelectorAll('#jobs-apply-button-id') //find the second button.
         
 
-        console.log(linkedInApplicationControlsAll[1]);
+        // console.log(linkedInApplicationControlsAll[1]);
         
-        linkedInApplicationControlsAll[1].parentElement.parentElement.parentElement.appendChild(spreadsheetButton);
+        // linkedInApplicationControlsAll[1].parentElement.parentElement.parentElement.appendChild(spreadsheetButton);
         
+        if(document.querySelector("#jobs-apply-button-id") != null){
+            document.querySelector(".mt4").firstElementChild.appendChild(spreadsheetButton);
+        }
+
+
         console.log(document.querySelectorAll('.post-apply-timeline'));
 
         //if we applied, the button goes away, so we need to add it to a different div.
@@ -87,6 +92,7 @@ async function newJobLoaded(){
             document.querySelectorAll('.post-apply-timeline')[0].firstElementChild.appendChild(spreadsheetButton);
             console.log('hi');
         }
+        
         
         //this adds an Event listener to the Button... which we need to add when a spreadsheetButton doesn't exist
         spreadsheetButton.addEventListener("click", addNewJobEventHandler); //this should parse the page... then add to cells.
@@ -190,39 +196,39 @@ async function addNewJobEventHandler() {
     //               then authenticate + get google sheet info
     //               finally append the parsed data to the correct google sheet
 
-    // chrome.runtime.sendMessage({triggerGoogleSheet: true},(response)=>{
-    //     // console.log("received a response: ", response);
+    chrome.runtime.sendMessage({triggerGoogleSheet: true},(response)=>{
+        // console.log("received a response: ", response);
 
-    //     if(response.GoogleSheet === "GoogleSheet"){
+        if(response.GoogleSheet === "GoogleSheet"){
             
-    //         const parsedLinkedInInfo = [JobTitleParsed, CompanyNameParsed, IndustryParsed, RoleParsed, LocationParsed, dateParsed, DatePostedParsed, SalaryRangeParsed];
+            const parsedLinkedInInfo = [JobTitleParsed, CompanyNameParsed, IndustryParsed, RoleParsed, LocationParsed, dateParsed, DatePostedParsed, SalaryRangeParsed];
             
-    //         //console.log("it worked, google sheet woot");
+            //console.log("it worked, google sheet woot");
 
-    //         //send message to append row
-    //         chrome.runtime.sendMessage({
-    //             action: "append_row",
-    //             values: parsedLinkedInInfo 
-    //             }, (responseAgain)=>{
+            //send message to append row
+            chrome.runtime.sendMessage({
+                action: "append_row",
+                values: parsedLinkedInInfo 
+                }, (responseAgain)=>{
 
-    //             //console.log("made it here");
+                //console.log("made it here");
 
-    //             console.log("(furthest point in content script) responseAgain:", responseAgain);
+                console.log("(furthest point in content script) responseAgain:", responseAgain);
 
-    //             if (responseAgain.success) {
-    //                 console.log("it worked dude, authenticated!");  //LETS GOO!!!
-    //             }
-    //             else{
-    //                 console.error("rip bro:", responseAgain.error); //<= could not authenticate
-    //             };
-    //         });
+                if (responseAgain.success) {
+                    console.log("it worked dude, authenticated!");  //LETS GOO!!!
+                }
+                else{
+                    console.error("rip bro:", responseAgain.error); //<= could not authenticate
+                };
+            });
 
-    //     }
-    //     else{
-    //         console.error("error brother: ", response.error);
-    //     };
+        }
+        else{
+            console.error("error brother: ", response.error);
+        };
 
-    //     return true;
+        return true;
     
-    // });       
+    });       
 }
