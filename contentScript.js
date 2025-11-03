@@ -93,7 +93,11 @@ async function newJobLoaded(){
             console.log('hi');
         }
         
-        
+        if(document.querySelectorAll('.jobs-s-apply').length >0 ){
+            document.querySelectorAll('.jobs-s-apply')[0].parentElement.firstElementChild.appendChild(spreadsheetButton);
+        }
+
+
         //this adds an Event listener to the Button... which we need to add when a spreadsheetButton doesn't exist
         spreadsheetButton.addEventListener("click", addNewJobEventHandler); //this should parse the page... then add to cells.
     }
@@ -128,9 +132,19 @@ async function addNewJobEventHandler() {
     let RoleParsed = Role;
     
     //Location
-    const Location = document.querySelector(".tvm__text.tvm__text--low-emphasis");
-    console.log(Location.textContent);
-    let LocationParsed = Location.textContent;
+    //there are multiple classes here, so we need to find the correct one (looping and finding the first one with TEXT.)
+    let Location = document.querySelectorAll(".tvm__text.tvm__text--low-emphasis");
+
+    let i = 0;
+    for(i = 0; i < Location.length; i++){
+        if(Location[i].innerText.length > 1){
+            Location = Location[i];
+            break;
+        }
+    }
+
+    console.log(Location.innerText);
+    let LocationParsed = Location.innerText.trim();
     
     //Date Applied
     const date = new Date(); 
@@ -141,45 +155,48 @@ async function addNewJobEventHandler() {
     //TO-DO: Make sure all cases of Date Posted are handled.
     
     //Date Posted (need to do math?)
-    const DatePosted = document.querySelectorAll(".tvm__text.tvm__text--low-emphasis")[2]; //the third is the date posted...
-    console.log(DatePosted.textContent);
+    let DatePosted = document.querySelectorAll(".tvm__text.tvm__text--low-emphasis")[i+2]; //the third is the date posted...
+    if(DatePosted.innerText.includes('·')){
+        DatePosted = document.querySelector(".tvm__text.tvm__text--positive");
+    }
+    console.log(DatePosted.innerText);
     let DatePostedParsed = "";
     let tempDate = new Date();
     
-    if(DatePosted.textContent.split(" ")[0] === "Reposted" && (DatePosted.textContent.split(" ")[2] === "day" || DatePosted.textContent.split(" ")[2] === "days")){
-        //console.log(date.toLocaleDateString(date.setDate(date.getDate() - DatePosted.textContent.split(" ")[1])));
-        tempDate.setDate(date.getDate() - parseInt(DatePosted.textContent.split(" ")[1]));
+    if(DatePosted.innerText.split(" ")[0] === "Reposted" && (DatePosted.innerText.split(" ")[2] === "day" || DatePosted.innerText.split(" ")[2] === "days")){
+        //console.log(date.toLocaleDateString(date.setDate(date.getDate() - DatePosted.innerText.split(" ")[1])));
+        tempDate.setDate(date.getDate() - parseInt(DatePosted.innerText.split(" ")[1]));
         DatePostedParsed = tempDate.toLocaleDateString(); 
     }
-    else if(DatePosted.textContent.split(" ")[0] === "Reposted" && (DatePosted.textContent.split(" ")[2] === "hour" || DatePosted.textContent.split(" ")[2] === "hours") && date.getHours() - DatePosted.textContent.split(" ")[1] < 0){
+    else if(DatePosted.innerText.split(" ")[0] === "Reposted" && (DatePosted.innerText.split(" ")[2] === "hour" || DatePosted.innerText.split(" ")[2] === "hours") && date.getHours() - DatePosted.innerText.split(" ")[1] < 0){
         //console.log(date.toLocaleDateString(date.setDate(date.getDate() - 1)));
         DatePostedParsed = date.toLocaleDateString(date.setDate(date.getDate() - 1));
     }
-    else if(DatePosted.textContent.split(" ")[0] === "Reposted"){
+    else if(DatePosted.innerText.split(" ")[0] === "Reposted"){
         //console.log(date.toLocaleDateString());
         DatePostedParsed = date.toLocaleDateString();
     }
-    else if(DatePosted.textContent.split(" ")[0] !== "Reposted" && (DatePosted.textContent.split(" ")[1] === "day" || DatePosted.textContent.split(" ")[1] === "days")){
-        //console.log(date.toLocaleDateString(date.setDate(date.getDate() - DatePosted.textContent.split(" ")[0])));
-        tempDate.setDate(date.getDate()-parseInt(DatePosted.textContent.split(" ")[0]));
+    else if(DatePosted.innerText.split(" ")[0] !== "Reposted" && (DatePosted.innerText.split(" ")[1] === "day" || DatePosted.innerText.split(" ")[1] === "days")){
+        //console.log(date.toLocaleDateString(date.setDate(date.getDate() - DatePosted.innerText.split(" ")[0])));
+        tempDate.setDate(date.getDate()-parseInt(DatePosted.innerText.split(" ")[0]));
         DatePostedParsed = tempDate.toLocaleDateString();
     }
-    else if(DatePosted.textContent.split(" ")[0] !== "Reposted" && (DatePosted.textContent.split(" ")[1] === "hour" || DatePosted.textContent.split(" ")[1] === "hours") && date.getHours() - DatePosted.textContent.split(" ")[0] < 0){
+    else if(DatePosted.innerText.split(" ")[0] !== "Reposted" && (DatePosted.innerText.split(" ")[1] === "hour" || DatePosted.innerText.split(" ")[1] === "hours") && date.getHours() - DatePosted.innerText.split(" ")[0] < 0){
         //console.log(date.toLocaleDateString(date.setDate(date.getDate() - 1)));
         tempDate.setDate(date.getDate()-1)
         DatePostedParsed = tempDate.toLocaleDateString();
     }
-    else if(DatePosted.textContent.split(" ")[0] !== "Reposted"){
+    else if(DatePosted.innerText.split(" ")[0] !== "Reposted"){
         //console.log(date.toLocaleDateString());
         DatePostedParsed = date.toLocaleDateString();
     };
     
-    if(DatePosted.textContent.split(" ")[1] === "day" || DatePosted.textContent.split(" ")[1] === "days")
+    if(DatePosted.innerText.split(" ")[1] === "day" || DatePosted.innerText.split(" ")[1] === "days")
     {
         
     };
     
-    //console.log(DatePosted.textContent.split(" ")[1]);
+    //console.log(DatePosted.innerText.split(" ")[1]);
     
     //Salary Range
     const SalaryRange = document.querySelector(".job-details-fit-level-preferences");
